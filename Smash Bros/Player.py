@@ -24,6 +24,7 @@ class Player:
         self.color = color
         self.lastShot = 0
         self.projectiles = []
+        self.fist = 0
 
     def update(self, level, players, dt):
         if self.health <= 0:
@@ -99,7 +100,8 @@ class Player:
     def attack(self, players):
         for player in players:
             if (player != self):
-                if abs(player.x - self.x) < 10 and abs(player.y - self.y) < 10:
+                if abs(player.x - self.x) < 5 and abs(player.y - self.y) < 5:
+                    self.fist = 1
                     player.health -= 10
 
     def hit(self, damage):
@@ -110,6 +112,9 @@ class Player:
             pygame.draw.circle(screen, (0,0,0),(self.x * pixelSize,self.y * pixelSize), self.radius * pixelSize)
         else:
             pygame.draw.circle(screen, self.color,(self.x * pixelSize,self.y * pixelSize), self.radius * pixelSize)
+            if self.fist == 1:
+                pygame.draw.circle(screen, self.color,((self.x + self.radius*self.facing) * pixelSize,(self.y - self.radius/2) * pixelSize), self.radius/4 * pixelSize)
+                self.fist = 0
         for projectile in self.projectiles:
             if projectile.alive == True:
                 projectile.draw(screen)
