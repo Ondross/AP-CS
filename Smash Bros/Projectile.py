@@ -33,6 +33,7 @@ class Projectile:
                 if Util.distance(p.getRect(), self) < self.radius + p.radius:
                     p.health -= self.dmg
                     self.alive = False
+                    p.vx += self.vx/2
 
 
     def update(self,level, players, dt):
