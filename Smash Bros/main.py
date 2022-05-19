@@ -19,6 +19,8 @@ screen = pygame.display.set_mode((50 * pixelSize, 40 * pixelSize))
 level = Level(pixelSize)
 level.addObstacle(10, 20, 30, 1, 1)
 level.addObstacle(10, 15, 2, 10, 2)
+level.addObstacle(5, 30, 15, 1, 1)
+level.addObstacle(35, 30, 15, 1, 1)
 
 players = [Player(1, 20, 3, (255, 0, 255)), Player(2, 30, 3, (255, 255, 0))]
 
