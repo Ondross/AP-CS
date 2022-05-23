@@ -28,6 +28,7 @@ class Player:
         self.fist = 0
         self.lastpunch = 0
         self.stunTimer = 0
+        self.punchRange = 3
 
     def update(self, level, players, dt):
 
@@ -91,13 +92,13 @@ class Player:
     def attack(self, players):
         now1 = time.time()
 
-        if (now1 - self.lastpunch > 1):
+        if (now1 - self.lastpunch > .6):
             self.lastpunch = time.time()
+            self.fist = 1
             for player in players:
                 if (player != self):
                     #you should only be able to attack when you're facing a player
-                    if abs(player.x - self.x) < 3 and abs(player.y - self.y) < 3:
-                        self.fist = 1
+                    if abs(player.x - self.x) < self.punchRange + .5 and abs(player.y - self.y) < self.punchRange:
                         player.health -= 10
                         player.stunTimer = 50
                         if player.x > self.x:
@@ -121,9 +122,14 @@ class Player:
                 pygame.draw.circle(screen, (self.color[0] * .8, self.color[1] * .8, self.color[2] * .8),(self.x * pixelSize,self.y * pixelSize), self.radius * pixelSize * 1.2)
             pygame.draw.circle(screen, self.color,(self.x * pixelSize,self.y * pixelSize), self.radius * pixelSize)
             if self.fist > 0 :
-                pygame.draw.circle(screen, self.color,((self.x + self.fist*3/4*self.radius*self.facing) * pixelSize,(self.y - self.radius/2) * pixelSize), self.radius/4 * pixelSize)
-                self.fist += 1
-                self.fist %= 3
+                fistDistance = self.facing * self.fist * self.punchRange / 16
+                pygame.draw.circle(screen, self.color,((self.x + fistDistance) * pixelSize, self.y * pixelSize), self.radius/2 * pixelSize)
+                if self.fist % 2:
+                    self.fist += 2
+                else:
+                    self.fist -= 2
+                if self.fist == 15:
+                    self.fist += 1
 
         for projectile in self.projectiles:
             if projectile.alive == True:
