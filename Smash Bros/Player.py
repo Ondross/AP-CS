@@ -119,6 +119,15 @@ class Player:
                     if abs(player.x - self.x) < 3 and abs(player.y - self.y) < 3:
                         self.fist = 1
                         player.health -= 10
+                        if player.x > self.x:
+                            player.vx += 4
+                        else:
+                            player.vx -= 4
+                        
+                        if player.y > self.y:
+                            player.vy -= 4
+                        elif player.y < self.y:
+                            player.vy += 4
 
     def hit(self, damage):
         self.health -= damage
