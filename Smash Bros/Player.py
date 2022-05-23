@@ -27,18 +27,17 @@ class Player:
         self.projectiles = []
         self.fist = 0
         self.lastpunch = 0
+        self.stunTimer = 0
 
     def update(self, level, players, dt):
 
+        if self.stunTimer > 0:
+            self.stunTimer -= 1
         if self.y > 40:
             self.health = 0
 
         if self.health <= 0:
             return
-        
-        
-            
-            
 
         for projectile in self.projectiles:
             if projectile.alive == True:
@@ -58,44 +57,25 @@ class Player:
 
         self.y += self.vy * dt
         self.x += self.vx * dt
-        
-
-    def checkCollisions(self, projectiles):
-        otherProjectiles = list(set(projectiles) - set(self.projectiles)) + list(set(self.projectiles) - set(projectiles))
-        for projectile in otherProjectiles:
-                yMatch = projectile.y + .4 > (self.y + self.radius) > projectile.y - .4
-                xMatch = projectile.x <= self.x <= projectile.x + 1
-                if yMatch and xMatch:
-                    print("hit")
-                    self.health -= 10
-                    projectile.alive = False
-                    self.vx += .5 * projectile.direction * projectile.vx
-            
-
-    def goLeft(self, speed=1):
-        
-        self.vx = -8 * speed
-        self.facing = -1
-      
-    def goRight(self, speed = 1):
-        self.vx = 8 * speed
-        self.facing = 1
 
     def getRect(self):
         return pygame.Rect(self.x,self.y, 2, 2)
     
-    def move(self, dir):
-        if (dir < 0 ):
-            self.goLeft(abs(dir))
-        elif (dir > 0):
-            self.goRight(dir)
+    def setXVel(self, val):
+        if self.stunTimer > 0:
+            return
+        if val > .01:
+            self.facing = 1
+        elif val < -.01:
+            self.facing = -1
         else:
-            self.stop()
-    
-    def stop(self):
-        self.vx *= 0.8
+            self.vx *= .8
+            return
+        self.vx = 8 * val
 
     def jump(self):
+        if self.stunTimer > 0:
+            return
         if self.jumps > 0:
             self.vy = -8
             self.jumps -=1
@@ -119,6 +99,7 @@ class Player:
                     if abs(player.x - self.x) < 3 and abs(player.y - self.y) < 3:
                         self.fist = 1
                         player.health -= 10
+                        player.stunTimer = 50
                         if player.x > self.x:
                             player.vx += 4
                         else:
@@ -136,6 +117,8 @@ class Player:
         if self.health<=0:
             pygame.draw.circle(screen, (0,0,0),(self.x * pixelSize,self.y * pixelSize), self.radius * pixelSize)
         else:
+            if self.stunTimer > 0:
+                pygame.draw.circle(screen, (self.color[0] * .8, self.color[1] * .8, self.color[2] * .8),(self.x * pixelSize,self.y * pixelSize), self.radius * pixelSize * 1.2)
             pygame.draw.circle(screen, self.color,(self.x * pixelSize,self.y * pixelSize), self.radius * pixelSize)
             if self.fist > 0 :
                 pygame.draw.circle(screen, self.color,((self.x + self.fist*3/4*self.radius*self.facing) * pixelSize,(self.y - self.radius/2) * pixelSize), self.radius/4 * pixelSize)

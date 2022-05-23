@@ -32,6 +32,7 @@ class Projectile:
             if p.num != self.playerNum:
                 if Util.distance(p.getRect(), self) < self.radius + p.radius:
                     p.health -= self.dmg
+                    p.stunTimer = 50
                     self.alive = False
                     p.vx += self.vx/2
 

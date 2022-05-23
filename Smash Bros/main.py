@@ -33,12 +33,14 @@ while True:
     events = pygame.event.get()
     keys = pygame.key.get_pressed()
     p = players[pygame.joystick.get_count()]
+
     if keys[pygame.K_LEFT]:
-        p.goLeft()
+        p.setXVel(-1)
     elif keys[pygame.K_RIGHT]:
-        p.goRight()
+        p.setXVel(1)
     else:
-        p.stop()
+        p.setXVel(0)
+
     for event in events:
         if event.type == JOYBUTTONDOWN:
             if event.button == 1:
@@ -48,10 +50,9 @@ while True:
             if event.button == 3:
                 players[event.joy].shoot()
         if event.type == JOYAXISMOTION:
-            players[event.joy].move(event.value)
-         
-        # if event.type == JOYHATMOTION:
-        #     players[event.joy].move(event.value)
+            if event.axis == 0:
+                players[event.joy].setXVel(event.value)
+
         if event.type == pygame.MOUSEBUTTONDOWN:
             print("CLICK!")
         if event.type == pygame.KEYDOWN:
