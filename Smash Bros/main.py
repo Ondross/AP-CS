@@ -7,7 +7,7 @@ import time
 pygame.init()
 pygame.joystick.init()
 joysticks = [pygame.joystick.Joystick(i) for i in range(pygame.joystick.get_count())]
-# print(len(joysticks) " controllers detected.")
+print(len(joysticks), " controllers detected.")
 
 clock = pygame.time.Clock()
 
@@ -19,10 +19,11 @@ screen = pygame.display.set_mode((50 * pixelSize, 40 * pixelSize))
 level = Level(pixelSize)
 level.addObstacle(10, 20, 30, 1, 1)
 level.addObstacle(10, 15, 2, 10, 2)
+level.addObstacle(23, 25, 10, 1)
 level.addObstacle(5, 30, 15, 1, 1)
 level.addObstacle(35, 30, 15, 1, 1)
 
-players = [Player(1, 20, 3, (255, 0, 255)), Player(2, 30, 3, (255, 255, 0))]
+players = [Player(1, 20, 3, (255, 0, 255)), Player(2, 30, 3, (255, 255, 0)), Player(3, 40, 3, (0, 255, 0))]
 
 
 lastUpdate = time.time()
@@ -42,12 +43,15 @@ while True:
         if event.type == JOYBUTTONDOWN:
             if event.button == 1:
                 players[event.joy].jump()
+            if event.button == 2:
+                players[event.joy].attack(players)
+            if event.button == 3:
+                players[event.joy].shoot()
         if event.type == JOYAXISMOTION:
-            print('axis motion', event.joy, event.axis, event.value)
-            if event.axis < 2:
-                pass
-        if event.type == JOYHATMOTION:
-            players[event.joy].move(event.value[0])
+            players[event.joy].move(event.value)
+         
+        # if event.type == JOYHATMOTION:
+        #     players[event.joy].move(event.value)
         if event.type == pygame.MOUSEBUTTONDOWN:
             print("CLICK!")
         if event.type == pygame.KEYDOWN:

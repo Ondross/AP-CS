@@ -1,5 +1,6 @@
 import time
 import pygame
+import math
 from Projectile import Projectile
 
 pygame.font.init()
@@ -27,8 +28,16 @@ class Player:
         self.fist = 0
 
     def update(self, level, players, dt):
+
+        if self.y > 40:
+            self.health = 0
+
         if self.health <= 0:
             return
+        
+        
+            
+            
 
         for projectile in self.projectiles:
             if projectile.alive == True:
@@ -62,22 +71,23 @@ class Player:
                     self.vx += .5 * projectile.direction * projectile.vx
             
 
-    def goLeft(self):
-        self.vx = -8
+    def goLeft(self, speed=1):
+        
+        self.vx = -8 * speed
         self.facing = -1
       
-    def goRight(self):
-        self.vx = 8
+    def goRight(self, speed = 1):
+        self.vx = 8 * speed
         self.facing = 1
 
     def getRect(self):
         return pygame.Rect(self.x,self.y, 2, 2)
     
     def move(self, dir):
-        if (dir == -1):
-            self.goLeft()
-        elif (dir == 1):
-            self.goRight()
+        if (dir < 0 ):
+            self.goLeft(abs(dir))
+        elif (dir > 0):
+            self.goRight(dir)
         else:
             self.stop()
     
