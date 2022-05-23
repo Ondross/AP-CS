@@ -26,6 +26,7 @@ class Player:
         self.lastShot = 0
         self.projectiles = []
         self.fist = 0
+        self.lastpunch = 0
 
     def update(self, level, players, dt):
 
@@ -108,12 +109,16 @@ class Player:
                 self.projectiles.pop(0)
 
     def attack(self, players):
-        for player in players:
-            if (player != self):
-                #you should only be able to attack when you're facing a player
-                if abs(player.x - self.x) < 5 and abs(player.y - self.y) < 5:
-                    self.fist = 1
-                    player.health -= 10
+        now1 = time.time()
+
+        if (now1 - self.lastpunch > 1):
+            self.lastpunch = time.time()
+            for player in players:
+                if (player != self):
+                    #you should only be able to attack when you're facing a player
+                    if abs(player.x - self.x) < 3 and abs(player.y - self.y) < 3:
+                        self.fist = 1
+                        player.health -= 10
 
     def hit(self, damage):
         self.health -= damage
