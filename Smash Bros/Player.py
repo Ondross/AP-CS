@@ -29,6 +29,8 @@ class Player:
         self.lastpunch = 0
         self.stunTimer = 0
         self.punchRange = 3
+        self.lastshield = 0
+        self.Shield = False
 
     def update(self, level, players, dt):
 
@@ -36,6 +38,8 @@ class Player:
             self.stunTimer -= 1
         if self.y > 40:
             self.health = 0
+        if time.time() - self.lastshield > 2:
+            self.Shield = False
 
         if self.health <= 0:
             return
@@ -52,7 +56,7 @@ class Player:
                 xMatch = obstacle.x <= self.x <= obstacle.x + obstacle.width
 
                 if yMatch and xMatch:
-                    self.jumps = 2
+                    self.jumps = 5
                     self.vy = 0
                     self.y = obstacle.y - self.radius
 
@@ -89,6 +93,13 @@ class Player:
             if len(self.projectiles) > 10:
                 self.projectiles.pop(0)
 
+    def shield(self):
+        now2 = time.time()
+        if now2 - self.lastshield > 3:
+            self.Shield = True
+            self.lastshield = time.time()
+    
+
     def attack(self, players):
         now1 = time.time()
 
@@ -98,7 +109,13 @@ class Player:
             for player in players:
                 if (player != self):
                     #you should only be able to attack when you're facing a player
-                    if abs(player.x - self.x) < self.punchRange + .5 and abs(player.y - self.y) < self.punchRange:
+                    if abs(player.x - self.x) < self.punchRange + .5 and abs(player.y - self.y) < 1:
+
+                        if player.Shield:
+                            player.Shield = False
+                            return
+
+                        self.fist = 1
                         player.health -= 10
                         player.stunTimer = 50
                         if player.x > self.x:
@@ -118,6 +135,8 @@ class Player:
         if self.health<=0:
             pygame.draw.circle(screen, (0,0,0),(self.x * pixelSize,self.y * pixelSize), self.radius * pixelSize)
         else:
+            if self.Shield == True:
+                pygame.draw.circle(screen, (255, 255, 255),(self.x * pixelSize,self.y * pixelSize), self.radius * pixelSize * 1.2)
             if self.stunTimer > 0:
                 pygame.draw.circle(screen, (self.color[0] * .8, self.color[1] * .8, self.color[2] * .8),(self.x * pixelSize,self.y * pixelSize), self.radius * pixelSize * 1.2)
             pygame.draw.circle(screen, self.color,(self.x * pixelSize,self.y * pixelSize), self.radius * pixelSize)

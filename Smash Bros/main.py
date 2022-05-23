@@ -49,6 +49,8 @@ while True:
                 players[event.joy].attack(players)
             if event.button == 3:
                 players[event.joy].shoot()
+            if event.button == 0:
+                players[event.joy].shield()
         if event.type == JOYAXISMOTION:
             if event.axis == 0:
                 players[event.joy].setXVel(event.value)
@@ -63,6 +65,8 @@ while True:
                 p.shoot()
             if event.key == pygame.K_z:
                 p.attack(players)
+            if event.key == pygame.K_c:
+                p.shield()
                            
             # if event.key == pygame.K_LEFT:
             #     p.goLeft()
