@@ -4,7 +4,7 @@ import math
 from Projectile import Projectile
 
 pygame.font.init()
-my_font = pygame.font.SysFont('Comic Sans MS', 48)
+my_font = pygame.font.SysFont('Comic Sans MS', 32)
 
 class Player:
     def __init__(self, num, x, y, color):
@@ -31,6 +31,9 @@ class Player:
         self.punchRange = 3
         self.lastshield = 0
         self.Shield = False
+        self.damagedone = 0
+        self.kills = 0
+        
 
     def update(self, level, players, dt):
 
@@ -117,7 +120,10 @@ class Player:
 
                         self.fist = 1
                         player.health -= 10
+                        self.damagedone += 10
                         player.stunTimer = 50
+                        if player.health < 1:
+                            players[self.num - 1].kills += 1
                         if player.x > self.x:
                             player.vx += 4
                         else:
@@ -154,8 +160,8 @@ class Player:
             if projectile.alive == True:
                 projectile.draw(screen)
         if self.health > 0:
-            text = str(self.health)
+            text = "player " + str(self.num) + " health:"+str(self.health)
         else:
             text = "DEAD"
         text_surface = my_font.render(text, False, self.color)
-        screen.blit(text_surface, (playerIndex * 100,0))
+        screen.blit(text_surface, (playerIndex * 300,0))

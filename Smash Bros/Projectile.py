@@ -35,8 +35,12 @@ class Projectile:
                         return
 
                     p.health -= self.dmg
+                    players[self.playerNum - 1].damagedone += self.dmg
+                    if p.health < 1:
+                        players[self.playerNum - 1].kills += 1
                     self.alive = False
                     p.vx += self.vx/3
+                    p.stunTimer = 50
 
 
     def update(self,level, players, dt):
